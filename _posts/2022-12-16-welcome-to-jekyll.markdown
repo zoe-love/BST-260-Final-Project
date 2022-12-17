@@ -23,6 +23,12 @@ Flow Chart of subject selection into the study from the MIMIC-IV database:
 
 ![Flow-Chart](https://github.com/zoe-love/BST-260-Final-Project/blob/main/FlowChart.png?raw=true "Subject Selection Flow Chart")
 
+Table 1:
+![Table-One](https://github.com/zoe-love/BST-260-Final-Project/blob/main/Table%201.png?raw=true "Table One")
+
+Model Evaluation:
+![Eval-Model](https://github.com/zoe-love/BST-260-Final-Project/blob/main/Eval%20Table.png?raw=true "Eval")
+
 ROC-AUC Curve for Logistic Regression Model:
 ![ROC-AUC](https://github.com/zoe-love/BST-260-Final-Project/blob/main/ROC_AUC.png?raw=true "ROC-AUC")
 
