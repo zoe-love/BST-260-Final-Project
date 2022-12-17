@@ -17,3 +17,6 @@ Flow Chart of subject selection into the study from the MIMIC-IV database:
 
 ROC-AUC Curve for Logistic Regression Model:
 ![ROC-AUC](https://github.com/zoe-love/BST-260-Final-Project/blob/main/ROC_AUC.png?raw=true "ROC-AUC")
+
+Top Predictive Features Selected by Logistic Regression Model:
+![VIP](https://github.com/zoe-love/BST-260-Final-Project/blob/main/VIP_log.png?raw=true "VIP Log")
