@@ -5,62 +5,23 @@ date:   2022-12-16 20:48:21 -0500
 categories: jekyll update
 ---
 
-Project Description: 
+Project Overview: 
 
 Using the ICU data included in the MIMIC-IV database sourced from Beth Israel Deaconess Medical Center mortality was predicted using laboratory results returned in the first 24 hours of the patient's stay in the ICU. 
 To predict mortality, both logisitc regression and random forest models were generated and top predicitve features from both models were determined. 
 Comparing the results of both models, the logisitic regression had higher overall scores. The top predictive features include lactate, sodium, and albumin levels. 
 
+Results: 
+For logistic regression and random forest model a training and testing datasets were generated with a 80/20 split. Logistic regression modeling was performed and tested with an accuracy of 0.74, indicating that the model was able to correctly identify patients that were at risk for mortality 74% of the time. The logistic regression model also reported a sensitivity or recall score of 0.76  and specificity of 0.71 showing 76% of the time mortality was predicted correctly and 71% of the time survival was predicted correctly. Using the ‘vip’ package in r the variable importance was plotted for the logistic regression model [5]. The plot shows, ‘albumin_min’, ‘lactate_max’, ‘lactate_min’, and ‘sodium_max’ as the top predictive features of mortality for MIMIC-IV ICU patients. Finally, the ROC-AUC curve was plotted for the logistic regression model and reported an AUC of 0.74. This value closely matches the accuracy of the model and provides additional evidence of the predictive qualities of the model. 
+
+Conclusion:
+The goal of this study was to report the predictive properties of laboratory results of MIMIC-IV patients in the ICU on the outcome of mortality. The features were evaluated using logistic regression and random forest modeling to determine the relative importance of each feature as well as the function of the mortality prediction model overall. While the logistic regression model did have a lower overall accuracy compared to the random forest, there was more even balance in the sensitivity and specificity metrics. In the case of mortality prediction in the ICU there is greater concern in a low sensitivity as that would indicate a low ability to predict mortality which has a greater consequence than low specificity, indicating reduced survival prediction.
+ 
+ Both models found that the lactate variable is highly predictive of mortality. As well as lactate, both models selected sodium as an important variable for predicting mortality. These results are in line with current medical understanding. Changes in lactate are often noted as the onset for changes in blood pressure and heart rate which are important indicators of health [6]. Lactate levels have also been reported to correlate with the diagnosis of septic shock in critically ill patients [7].  High sodium levels have also been reported to indicate renal function decline and dehydration which both are important for patient health [8,9]. The top predictive features selected  by both models are not surprising and give greater evidence that the predictive model is informative of patient health within the first 24 hours of lab results collected
+
 Flow Chart of subject selection into the study from the MIMIC-IV database:
 
 ![Flow-Chart](https://github.com/zoe-love/BST-260-Final-Project/blob/main/FlowChart.png?raw=true "Subject Selection Flow Chart")
-
-Table One: 
-"","0","1","p","test"
-"n","13668","3417","",""
-"admission_age (mean (SD))","64.99 (16.44)","69.77 (15.22)","<0.001",""
-"gender = M (%)","7827 (57.3)","1861 (54.5)","0.003",""
-"los_icu (mean (SD))","4.06 (5.47)","6.13 (5.42)","<0.001",""
-"aniongap_min (mean (SD))","12.92 (3.36)","15.20 (4.67)","<0.001",""
-"aniongap_max (mean (SD))","15.40 (4.21)","19.26 (6.42)","<0.001",""
-"albumin_min (mean (SD))","3.15 (0.66)","2.87 (0.73)","<0.001",""
-"bicarbonate_min (mean (SD))","22.30 (4.54)","19.56 (6.07)","<0.001",""
-"bicarbonate_max (mean (SD))","24.44 (4.17)","22.92 (5.30)","<0.001",""
-"bilirubin_min (mean (SD))","1.57 (3.61)","2.87 (6.22)","<0.001",""
-"bilirubin_max (mean (SD))","1.78 (3.93)","3.32 (6.89)","<0.001",""
-"creatinine_min (mean (SD))","1.28 (1.37)","1.72 (1.46)","<0.001",""
-"creatinine_max (mean (SD))","1.49 (1.81)","2.09 (1.72)","<0.001",""
-"chloride_min (mean (SD))","102.09 (6.15)","100.86 (7.32)","<0.001",""
-"chloride_max (mean (SD))","105.79 (6.93)","105.69 (8.11)","0.480",""
-"hematocrit_min (mean (SD))","30.08 (6.73)","29.63 (6.98)","<0.001",""
-"hematocrit_max (mean (SD))","34.63 (6.03)","34.04 (6.60)","<0.001",""
-"hemoglobin_min (mean (SD))","9.97 (2.27)","9.66 (2.34)","<0.001",""
-"hemoglobin_max (mean (SD))","11.39 (2.11)","11.03 (2.24)","<0.001",""
-"lactate_min (mean (SD))","1.49 (0.78)","2.46 (2.09)","<0.001",""
-"lactate_max (mean (SD))","2.55 (1.84)","4.62 (4.16)","<0.001",""
-"lactate_mean (mean (SD))","1.99 (1.17)","3.49 (2.97)","<0.001",""
-"magnesium_min (mean (SD))","1.91 (0.39)","1.90 (0.39)","0.144",""
-"magnesium_max (mean (SD))","2.22 (0.92)","2.31 (0.96)","<0.001",""
-"phosphate_min (mean (SD))","3.30 (1.12)","3.73 (1.60)","<0.001",""
-"phosphate_max (mean (SD))","3.90 (1.44)","4.93 (2.12)","<0.001",""
-"platelet_min (mean (SD))","192.11 (103.36)","175.86 (113.93)","<0.001",""
-"platelet_max (mean (SD))","219.29 (109.84)","213.06 (125.11)","0.004",""
-"potassium_min (mean (SD))","3.83 (0.54)","3.88 (0.68)","<0.001",""
-"potassium_max (mean (SD))","4.58 (0.85)","4.79 (0.94)","<0.001",""
-"ptt_min (mean (SD))","32.27 (12.53)","36.76 (16.55)","<0.001",""
-"ptt_max (mean (SD))","42.31 (28.27)","54.38 (37.52)","<0.001",""
-"inr_min (mean (SD))","1.37 (0.64)","1.65 (0.93)","<0.001",""
-"inr_max (mean (SD))","1.54 (0.98)","2.07 (1.59)","<0.001",""
-"pt_min (mean (SD))","14.96 (6.62)","17.91 (9.58)","<0.001",""
-"pt_max (mean (SD))","16.72 (9.59)","22.37 (16.87)","<0.001",""
-"sodium_min (mean (SD))","136.35 (5.10)","136.00 (6.09)","0.001",""
-"sodium_max (mean (SD))","139.62 (4.71)","140.45 (6.61)","<0.001",""
-"bun_min (mean (SD))","23.34 (19.43)","34.84 (25.82)","<0.001",""
-"bun_max (mean (SD))","26.86 (21.97)","40.51 (28.36)","<0.001",""
-"bun_mean (mean (SD))","25.09 (20.49)","37.71 (26.90)","<0.001",""
-"wbc_min (mean (SD))","10.44 (6.86)","12.59 (9.97)","<0.001",""
-"wbc_max (mean (SD))","13.39 (9.87)","16.76 (13.64)","<0.001",""
-"wbc_mean (mean (SD))","11.89 (7.88)","14.61 (11.51)","<0.001",""
 
 ROC-AUC Curve for Logistic Regression Model:
 ![ROC-AUC](https://github.com/zoe-love/BST-260-Final-Project/blob/main/ROC_AUC.png?raw=true "ROC-AUC")
