@@ -22,7 +22,7 @@ title: BST 260 Data Science Final Project
 name: Zoe Love
 email: zlove@hsph.harvard.edu
 description: >- # this means to ignore newlines until "baseurl:"
-  Using ICU patient laboratory results to predict mortality using logistic regression. 
+  Project Description: Using ICU patient laboratory results to predict mortality using logistic regression. 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
