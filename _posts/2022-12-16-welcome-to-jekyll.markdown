@@ -11,4 +11,4 @@ Using the ICU data included in the MIMIC-IV database sourced from Beth Israel De
 To predict mortality, both logisitc regression and random forest models were generated and top predicitve features from both models were determined. 
 Comparing the results of both models, the logisitic regression had higher overall scores. The top predictive features include lactate, sodium, and albumin levels. 
 
-![alt text](https://github.com/zoe-love/BST-260-Final-Project/blob/main/FlowChart.png "Subject Selection Flow Chart")
+![Flow-Chart](https://github.com/zoe-love/BST-260-Final-Project/blob/main/FlowChart.png?raw=true "Subject Selection Flow Chart")
