@@ -1,0 +1,148 @@
+---
+title: "Final Project"
+author: "Z. Love"
+date: "2022-12-15"
+output: html_document
+---
+
+```{r echo=FALSE}
+library(readr)
+library(tidyverse)
+library(caret)
+library(dslabs)
+library(vip)
+library(randomForest)
+library(mlr)
+library(pROC)
+```
+
+```{r echo=FALSE}
+# Load ICU data from MIMIC-IV
+ICU_df <- read_csv("ICU_df.csv")
+```
+
+```{r}
+# define the control and case subjects
+control <- ICU_df %>% filter(mort_icu == 0)
+case <-  ICU_df %>% filter(mort_icu == 1)
+
+#downsample dataset
+control <- sample_n(control, 13668)
+
+ICU_df <-rbind(control,case) 
+ICU_df%>% group_by(mort_icu) %>% summarise(Count = n())
+```
+
+```{r}
+y <- ICU_df$mort_icu
+set.seed(2007)
+test_index <- createDataPartition(y, times = 1, p = 0.2, list = FALSE)
+test_set <- ICU_df[test_index,]
+train_set <- ICU_df[-test_index,]
+
+```
+
+```{r}
+x <- ICU_df |> 
+  select(aniongap_min, aniongap_max, albumin_min, bicarbonate_min, bicarbonate_max, bilirubin_min, bilirubin_max, creatinine_min, creatinine_max, chloride_min, chloride_max, hematocrit_min, hematocrit_max, hemoglobin_min, hemoglobin_max, lactate_min, lactate_max, lactate_mean, magnesium_min, magnesium_max, phosphate_min, phosphate_max, platelet_min, platelet_max, potassium_min, potassium_max, ptt_min, ptt_max, inr_min, inr_max, pt_min, pt_max, sodium_min, sodium_max, bun_min, bun_max, bun_mean, wbc_min, wbc_max, wbc_mean)
+  
+x_train <- train_set |>
+  select(aniongap_min, aniongap_max, albumin_min, bicarbonate_min, bicarbonate_max, bilirubin_min, bilirubin_max, creatinine_min, creatinine_max, chloride_min, chloride_max, hematocrit_min, hematocrit_max, hemoglobin_min, hemoglobin_max, lactate_min, lactate_max, lactate_mean, magnesium_min, magnesium_max, phosphate_min, phosphate_max, platelet_min, platelet_max, potassium_min, potassium_max, ptt_min, ptt_max, inr_min, inr_max, pt_min, pt_max, sodium_min, sodium_max, bun_min, bun_max, bun_mean, wbc_min, wbc_max, wbc_mean)
+
+x_test <- test_set |>
+  select(aniongap_min, aniongap_max, albumin_min, bicarbonate_min, bicarbonate_max, bilirubin_min, bilirubin_max, creatinine_min, creatinine_max, chloride_min, chloride_max, hematocrit_min, hematocrit_max, hemoglobin_min, hemoglobin_max, lactate_min, lactate_max, lactate_mean, magnesium_min, magnesium_max, phosphate_min, phosphate_max, platelet_min, platelet_max, potassium_min, potassium_max, ptt_min, ptt_max, inr_min, inr_max, pt_min, pt_max, sodium_min, sodium_max, bun_min, bun_max, bun_mean, wbc_min, wbc_max, wbc_mean)
+
+```
+
+```{r}
+glm_fit <- glm(mort_icu ~ aniongap_min + aniongap_max + albumin_min + bicarbonate_min + bicarbonate_max + bilirubin_min + bilirubin_max + creatinine_min + creatinine_max + chloride_min + chloride_max + hematocrit_min + hematocrit_max + hemoglobin_min + hemoglobin_max + lactate_min + lactate_max + lactate_mean + magnesium_min + magnesium_max + phosphate_min + phosphate_max + platelet_min + platelet_max + potassium_min + potassium_max + ptt_min + ptt_max + inr_min + inr_max + pt_min + pt_max + sodium_min + sodium_max + bun_min + bun_max + bun_mean + wbc_min + wbc_max + wbc_mean,
+                      data = train_set,
+                      family = "binomial")
+```
+
+```{r}
+summary(glm_fit)
+```
+
+```{r}
+p_hat_logit <- predict(glm_fit, test_set, type = "response")
+y_hat_logit <- factor(ifelse(p_hat_logit > 0.5, 1, 0))
+cm_log <- confusionMatrix(as.factor(test_set$mort_icu), y_hat_logit)
+log_Accuracy <- cm_log$overall[["Accuracy"]]
+log_Sensitivity<- cm_log$byClass["Sensitivity"]
+log_Specificity <- cm_log$byClass["Specificity"]
+log_Prevalence <- cm_log$byClass["Prevalence"]
+```
+
+
+```{r}
+vip(glm_fit)
+```
+```{r}
+x_train_impute <- impute(x_train, classes = list(numeric = imputeMedian()))
+y_train <- as.factor(train_set$mort_icu)
+```
+
+```{r}
+control <- trainControl(method="cv", number=5)
+grid <- data.frame(mtry = c(1, 5, 10, 25, 30, 35, 40))
+train_rf <- caret::train(x_train_impute$data, y_train,
+                  method = "rf",
+                  ntree = 150,
+                  trControl = control,
+                  tuneGrid = grid,
+                  nSamp = 5000)
+
+fit_rf <- randomForest(x_train_impute$data, y_train, mtry=train_rf$bestTune$mtry)
+```
+
+```{r}
+
+```
+
+
+```{r}
+y_test <- as.factor(test_set$mort_icu)
+x_test_impute <- impute(x_test, classes = list(numeric = imputeMedian()))
+y_hat_rf <- predict(fit_rf, x_test_impute$data)
+
+cm_rf <- confusionMatrix(y_hat_rf, y_test)
+
+rf_Accuracy <- cm_rf$overall[["Accuracy"]]
+rf_Sensitivity<- cm_rf$byClass["Sensitivity"]
+rf_Specificity <- cm_rf$byClass["Specificity"]
+rf_Prevalence <- cm_rf$byClass["Prevalence"]
+```
+
+```{r}
+model <- c("Random Forest", "Logistic Regression")
+Accuracy <- c(rf_Accuracy, log_Accuracy)
+Sensitivity <- c(rf_Sensitivity, log_Sensitivity)
+Specificity <- c(rf_Specificity, log_Specificity)
+Prevalence <- c(rf_Prevalence, log_Prevalence)
+df <- data.frame(model, Accuracy, Sensitivity, Specificity, Prevalence)
+df
+```
+
+
+```{r}
+vip(fit_rf)
+```
+
+
+```{r}
+test_roc = roc(test_set$mort_icu ~ p_hat_logit, plot = TRUE, print.auc = TRUE)
+```
+
+```{r}
+y_hat_rf_prob <- predict(fit_rf, x_test_impute$data, type = "response")
+#y_hat_rf_probs <- ifelse(y_hat_rf_prob[,2] > 0.5, 1, 0)
+test_roc = roc(y_test ~ as.numeric(y_hat_rf_prob), plot = TRUE, print.auc = TRUE)
+```
+
+
+
+
+
+
+
